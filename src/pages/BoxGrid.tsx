@@ -8,6 +8,7 @@ import { firestore } from "../services/firebaseConfig";
 import { BoxInterface } from "../helpers/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getDatabaseDocuments } from "../services/firestore";
+import BoxDrawer from "../components/BoxDrawer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -28,7 +29,9 @@ export default function BoxGrid() {
   console.log("Firebase oBject", firestore);
   const [spacing, setSpacing] = useState<GridSpacing>(4);
   const [openModalState, setOpenModalState] = useState<Boolean>(false);
+  const [openBoxDrawerState, setOpenBoxDrawerState] = useState<Boolean>(false);
   const [boxes, setBoxes] = useState<Array<BoxInterface>>([]);
+  const [childBoxId, setChildBoxId] = useState<String>("");
   const [loading, setLoading] = useState(true);
   const classes = useStyles();
   const boxArray: Array<BoxInterface> = [];
@@ -37,9 +40,10 @@ export default function BoxGrid() {
     setOpenModalState(!openModalState);
   };
 
-  const childProps: any = {
-    id: "string",
-    handlerFunction: handleModal,
+  const handleChildBox = (boxId: string) => {
+    console.log("Child found", boxId);
+    setOpenBoxDrawerState(!openBoxDrawerState);
+    setChildBoxId(boxId);
   };
 
   // useEffect(() => {
@@ -96,10 +100,10 @@ export default function BoxGrid() {
               <Grid container justify="center" spacing={spacing}>
                 {boxes.map((boxData) => {
                   return (
-                    <Grid key={"string"} item>
+                    <Grid item>
                       <BoxSkeleton
                         boxData={boxData}
-                        handlerFunction={handleModal}
+                        parentHandlerFunction={handleChildBox}
                       />
                     </Grid>
                   );
@@ -110,29 +114,13 @@ export default function BoxGrid() {
           {openModalState ? (
             <BoxDialog handlerFunction={handleModal}></BoxDialog>
           ) : null}
+          {openBoxDrawerState ? (
+            <BoxDrawer
+              boxData={boxes.find((element) => element.id == childBoxId)}
+            ></BoxDrawer>
+          ) : null}
         </div>
       )}
     </div>
   );
 }
-
-// {openModalState ? (
-// 	<BoxDialog handlerFunction={handleModal}></BoxDialog>
-// ): null}
-
-// <div style={{ marginTop: '1em', marginBottom: '1em' }}>
-// 		<Button variant="outlined" color="primary" onClick={handleModal}>
-// 			ADD BOX
-// 		</Button>
-// 		</div>
-// 		<Grid container className={classes.root} spacing={4}>
-// 		<Grid item xs={12}>
-// 		<Grid container justify="center" spacing={spacing}>
-// 		{boxArray.map((boxData) => {
-// 			return (<Grid key={'string'} item>
-// 					<BoxSkeleton boxData={boxData} handlerFunction={handleModal} />
-// 				</Grid>)
-// 			})}
-// 		</Grid>
-// 		</Grid>
-// 		</Grid>
