@@ -1,7 +1,7 @@
 import React from 'react';
 
 function Page3(props: any) {
-    console.log('In Page 3');
+    console.log('In Page 3', props.history.location);
     return (
         <div>
             <h1>Page 3</h1>
