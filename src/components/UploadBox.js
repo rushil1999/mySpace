@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import BoxService from '../services/BoxService';
+import firestore from '../services/firebase';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -15,13 +15,12 @@ const useStyles = makeStyles(theme => ({
 	},
 }));
 
-const UploadBox = () => {
+const UploadBox = ({boxes, setBoxes}) => {
 	const [state, setState] = useState({
 		name: '',
 		description: '',
 	});
-	const [submitted, setSubmitted] = useState(false);
-	const [box, setBox] = useState(['']);
+	
 	const classes = useStyles();
 	const handleChange = evt => {
 		const value = evt.target.value;
@@ -36,18 +35,19 @@ const UploadBox = () => {
 			name: state.name,
 			description: state.description,
 		};
-		BoxService.create(data)
-			.then(() => {
-				setSubmitted(true);
+		
+		firestore
+			.collection('box')
+			.doc()
+			.set(data)
+			.then(function () {
+				console.log('Box successfully written!');
 			})
-			.catch(e => {
-				console.log(e);
+			.catch(function (error) {
+				console.error('Error writing Box: ', error);
 			});
+	
 	};
-
-	// useEffect(() => {
-
-	// });
 
 	return (
 		<div className={classes.root}>
