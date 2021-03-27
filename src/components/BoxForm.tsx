@@ -1,8 +1,13 @@
-import React from 'react';
+import React , {useState } from 'react';
 import TextField from '@material-ui/core/TextField';
 import DropZone from './Upload';
 
-function BoxForm(props: any) {
+const BoxForm= (props: any) => {
+    const [state, setState] = useState({
+		name: '',
+		description: '',
+	});
+	
     return(
     <form>
         <TextField
