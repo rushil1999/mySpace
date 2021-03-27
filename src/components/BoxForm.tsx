@@ -9,14 +9,14 @@ function BoxForm(props: any) {
             autoFocus
             margin="dense"
             id="name"
-            label="Box Name"
+            label="Name"
             fullWidth
         />
         <TextField
             autoFocus
             margin="dense"
-            id="name"
-            label="Box Desc"
+            id="description"
+            label="Description"
             fullWidth
         />
     </form>
