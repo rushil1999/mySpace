@@ -141,13 +141,13 @@ function Sidebar(props: any) {
           <ListItemIcon>
             <ViewAgenda />
           </ListItemIcon>
-          <ListItemText primary="Resource Management" />
+          <ListItemText primary="Page 3" />
         </ListItem>
-        <ListItem button component={Link} to={"/page3"}>
+        <ListItem button component={Link} to={"/todo-grid"}>
           <ListItemIcon>
             <ViewAgenda />
           </ListItemIcon>
-          <ListItemText primary="Page 3" />
+          <ListItemText primary="Resource Management" />
         </ListItem>
         <ListItem button>
           <ListItemIcon>
