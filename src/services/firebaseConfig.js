@@ -20,11 +20,11 @@ const firebaseConfig = {
 	appId: "1:767975049636:web:d09fd032eabce318e01931",
 	measurementId: "G-FQ60HV8HPS"
 }
-console.log(firebaseConfig);
 firebase.initializeApp(firebaseConfig)
 firebase.analytics();
 const database = firebase.database();
 const storage = firebase.storage();
+console.log('storage', storage);
 const firestore = firebase.firestore();
 
 export { storage, firestore, database }

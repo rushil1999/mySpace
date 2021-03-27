@@ -43,7 +43,7 @@ function Sidebar(props: any) {
       </List>
       <List>
         <Divider />
-        <ListItem button component={Link} to={"/page2"}>
+        <ListItem button component={Link} to={"/box-grid"}>
           <ListItemIcon>
             <ViewAgenda />
           </ListItemIcon>

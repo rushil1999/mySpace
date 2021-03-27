@@ -116,6 +116,7 @@ export default function BoxGrid() {
           ) : null}
           {openBoxDrawerState ? (
             <BoxDrawer
+              anchor={"right"}
               boxData={boxes.find((element) => element.id == childBoxId)}
             ></BoxDrawer>
           ) : null}
