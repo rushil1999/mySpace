@@ -5,6 +5,8 @@ import BoxSkeleton from '../components/BoxSkeleton';
 import BoxDialog from '../components/BoxDialog';
 import Button from '@material-ui/core/Button';
 import  { firestore } from '../services/firebaseConfig'
+import { BoxInterface } from '../helpers/interfaces';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -22,12 +24,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 
-export default function BoxGrid() {
-	console.log('Firebase oBject', firestore);
-	const [spacing, setSpacing] = useState<GridSpacing>(4);
-	const [openModalState, setOpenModalState] = useState<Boolean>(false);
-	const [boxes, setBoxes] = useState<Array<Record<string, string>>>([]);
-	const classes = useStyles();
+export default function BoxGrid() { 
+  console.log('Firebase oBject', firestore);
+  const [spacing, setSpacing] = useState<GridSpacing>(4);
+  const [openModalState, setOpenModalState] = useState<Boolean>(false);
+  const [boxes, setBoxes] = useState<Array<BoxInterface>>([]);
+	const [loading, setLoading] = useState(true);
+  const classes = useStyles();
+	const boxArray: Array<BoxInterface> = [];
 
 	const handleModal = () => {
 		setOpenModalState(!openModalState);
@@ -44,33 +48,84 @@ export default function BoxGrid() {
 			.get()
 			.then(querySnapshot => {
 				const data = querySnapshot.docs.map(doc => doc.data());
-				console.log(data);
-			});
-	}, []);
+				const ids = querySnapshot.docs.map(doc => doc.id);
+				data.map((element) => {
+						const strictBox: BoxInterface = {
+							id: '',
+							name: element.name,
+							description: element.description,
+						}
+						boxArray.push(strictBox);
+				})
+				
+				ids.map((element, index) => {
+					boxArray[index]["id"] = element;
+				})
+				console.log(boxArray);
+				if(boxArray){
+					setBoxes(boxArray);
+					setLoading(false);
+				}
+    });
+    }, []);
 
-	return (
-		<>
-			<>
+
+
+		return (
+
+			<div>
+				{loading ? <CircularProgress/> : 
+				<div>
 				<div style={{ marginTop: '1em', marginBottom: '1em' }}>
 					<Button variant="outlined" color="primary" onClick={handleModal}>
 						ADD BOX
 					</Button>
 				</div>
+				{console.log('Is it here', boxArray)}
 				<Grid container className={classes.root} spacing={4}>
-					<Grid item xs={12}>
-						<Grid container justify="center" spacing={spacing}>
-							{[0, 1, 2, 3].map(value => {
-								return (
-									<Grid key={'string'} item>
-										<BoxSkeleton id={'string'} handlerFunction={handleModal} />
-									</Grid>
-								);
-							})}
-						</Grid>
-					</Grid>
+				<Grid item xs={12}>
+				<Grid container justify="center" spacing={spacing}>
+				{boxes.map((boxData) => {
+					return (<Grid key={'string'} item>
+							<BoxSkeleton boxData={boxData} handlerFunction={handleModal} />
+						</Grid>) 
+					})}
 				</Grid>
-			</>
-			<>{openModalState ? <BoxDialog handlerFunction={handleModal}></BoxDialog> : null}</>
-		</>
-	);
+				</Grid>
+				</Grid>
+				{openModalState ? (
+					<BoxDialog handlerFunction={handleModal}></BoxDialog>
+				): null}
+				</div>
+				}
+			</div>
+		);
 }
+
+
+
+
+
+
+// {openModalState ? (
+// 	<BoxDialog handlerFunction={handleModal}></BoxDialog>
+// ): null}
+
+
+
+// <div style={{ marginTop: '1em', marginBottom: '1em' }}>
+// 		<Button variant="outlined" color="primary" onClick={handleModal}>
+// 			ADD BOX
+// 		</Button>
+// 		</div>
+// 		<Grid container className={classes.root} spacing={4}>
+// 		<Grid item xs={12}>
+// 		<Grid container justify="center" spacing={spacing}>
+// 		{boxArray.map((boxData) => {
+// 			return (<Grid key={'string'} item>
+// 					<BoxSkeleton boxData={boxData} handlerFunction={handleModal} />
+// 				</Grid>) 
+// 			})}
+// 		</Grid>
+// 		</Grid>
+// 		</Grid>

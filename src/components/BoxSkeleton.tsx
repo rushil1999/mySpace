@@ -30,7 +30,7 @@ interface MediaProps {
 
 function BoxSkeleton(props: any) {
   console.log("Box Skeleton Props", props);
-  const { id } = props;
+  const { boxData } = props;
 
   const [box, setBox] = useState({})
 
@@ -68,7 +68,7 @@ function BoxSkeleton(props: any) {
 						loading ? (
 							<Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
 						) : (
-							'Ted'
+							boxData.name
 						)
 					}
 					subheader={loading ? <Skeleton animation="wave" height={10} width="40%" /> : '5 hours ago'}
@@ -91,7 +91,7 @@ function BoxSkeleton(props: any) {
 					) : (
 						<Button>
 							<Typography variant="body2" color="textSecondary" component="p">
-								{'Clikc to fill in'}
+								{boxData.description}
 							</Typography>
 						</Button>
 					)}
