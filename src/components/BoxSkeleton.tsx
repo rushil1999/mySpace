@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useState, useEffect}from 'react';
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
@@ -10,7 +10,9 @@ import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Button from '@material-ui/core/Button';
- 
+
+
+
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -29,6 +31,17 @@ interface MediaProps {
 }
 
 function BoxSkeleton(props: any) {
+  console.log("Box Skeleton Props", props);
+  const { id } = props;
+
+  const [box, setBox] = useState({})
+
+
+
+
+
+  const {handlerFunction} = props;
+  console.log('Handle Modal', handlerFunction);
   const { loading = false } = props;
   const classes = useStyles();
   //TODO: Change button to link
@@ -77,10 +90,10 @@ function BoxSkeleton(props: any) {
             <Skeleton animation="wave" height={10} width="80%" />
           </React.Fragment>
         ) : (
-          <Button> 
+          <Button onClick={handlerFunction}> 
           <Typography variant="body2" color="textSecondary" component="p">
             {
-              "Why First Minister of Scotland Nicola Sturgeon thinks GDP is the wrong measure of a country's success:"
+              "Clikc to fill in"
             }
           </Typography>
           </Button>

@@ -47,18 +47,14 @@ function Sidebar(props: any) {
       </List>
       <List>  
         <Divider/>
-        <Link to={'/page2'}>
-            <ListItem button>
+        <ListItem button component={Link} to={'/page2'}>
                 <ListItemIcon><ViewAgenda/></ListItemIcon>
                 <ListItemText primary='Resource Management'/>
-            </ListItem>
-        </Link>
-        <Link to={'/page3'}>
-            <ListItem button>
+        </ListItem>
+        <ListItem button component={Link} to={'/page3'}>
                 <ListItemIcon><ViewAgenda/></ListItemIcon>
                 <ListItemText primary='Page 3'/>
-            </ListItem>
-        </Link>
+        </ListItem>
         <ListItem button>
             <ListItemIcon><ViewAgenda/></ListItemIcon>
             <ListItemText primary='Task Management'/>
