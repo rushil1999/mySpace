@@ -1,6 +1,6 @@
-import firebase from './firebase';
+import database from './firebaseConfig';
 
-const db = firebase.ref('/box');
+const db = database.ref('/box');
 console.log(db);
 const getAll = () => {
 	return db;

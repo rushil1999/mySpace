@@ -10,7 +10,6 @@ import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Skeleton from '@material-ui/lab/Skeleton';
 import Button from '@material-ui/core/Button';
- 
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -33,60 +32,56 @@ function BoxSkeleton(props: any) {
   const classes = useStyles();
   //TODO: Change button to link
   return (
-    <Card className={classes.card}>
-      <CardHeader
-        avatar={
-          loading ? (
-            <Skeleton animation="wave" variant="circle" width={40} height={40} />
-          ) : (
-            <Avatar
-              alt="Box"
-              src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
-            />
-          )
-        }
-        action={
-          loading ? null : (
-            <IconButton aria-label="settings">
-              <MoreVertIcon />
-            </IconButton>
-          )
-        }
-        title={
-          loading ? (
-            <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
-          ) : (
-            'Ted'
-          )
-        }
-        subheader={loading ? <Skeleton animation="wave" height={10} width="40%" /> : '5 hours ago'}
-      />
-      {loading ? (
-        <Skeleton animation="wave" variant="rect" className={classes.media} />
-      ) : (
-        <CardMedia
-          className={classes.media}
-          image="https://w7.pngwing.com/pngs/206/72/png-transparent-animation-artist-painting-free-svg-graphics-photography-wikimedia-commons-painting.png"
-          title="BOX"
-        />
-      )}
-      <CardContent>
-        {loading ? (
-          <React.Fragment>
-            <Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
-            <Skeleton animation="wave" height={10} width="80%" />
-          </React.Fragment>
-        ) : (
-          <Button> 
-          <Typography variant="body2" color="textSecondary" component="p">
-            {
-              "Why First Minister of Scotland Nicola Sturgeon thinks GDP is the wrong measure of a country's success:"
-            }
-          </Typography>
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+		<Card className={classes.card}>
+			<CardHeader
+				avatar={
+					loading ? (
+						<Skeleton animation="wave" variant="circle" width={40} height={40} />
+					) : (
+						<Avatar
+							alt="Box"
+							src="https://pbs.twimg.com/profile_images/877631054525472768/Xp5FAPD5_reasonably_small.jpg"
+						/>
+					)
+				}
+				action={
+					loading ? null : (
+						<IconButton aria-label="settings">
+							<MoreVertIcon />
+						</IconButton>
+					)
+				}
+				title={
+					loading ? <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} /> : 'Ted'
+				}
+				subheader={loading ? <Skeleton animation="wave" height={10} width="40%" /> : '5 hours ago'}
+			/>
+			{loading ? (
+				<Skeleton animation="wave" variant="rect" className={classes.media} />
+			) : (
+				<CardMedia
+					className={classes.media}
+					image="gs://myspace-ec3c9.appspot.com/64c35da8ce05400291f6eaf561d1acea.png"
+					title="BOX"
+				/>
+			)}
+			<CardContent>
+				{loading ? (
+					<React.Fragment>
+						<Skeleton animation="wave" height={10} style={{ marginBottom: 6 }} />
+						<Skeleton animation="wave" height={10} width="80%" />
+					</React.Fragment>
+				) : (
+					<Button>
+						<Typography variant="body2" color="textSecondary" component="p">
+							{
+								"Why First Minister of Scotland Nicola Sturgeon thinks GDP is the wrong measure of a country's success:"
+							}
+						</Typography>
+					</Button>
+				)}
+			</CardContent>
+		</Card>
   );
 }
 
