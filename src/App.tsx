@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="App">
       <React.Fragment>
-        <Routes></Routes>
+        <Routes/>
       </React.Fragment>
     </div>
   );

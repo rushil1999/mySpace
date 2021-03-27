@@ -23,7 +23,7 @@ const useStyles = makeStyles({
 
 
 function Sidebar(props: any) {
-    console.log('IN Sidebar');
+    console.log('IN Sidebar', props.history.location);
 
   const classes = useStyles();
   const [state, setState] = React.useState(false);
