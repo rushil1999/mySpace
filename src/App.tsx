@@ -1,12 +1,13 @@
 import React from 'react';
 import './App.css';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar'
+import Routes from './components/Routes';
 
-function App() {
+function App() {  
   return (
     <div className="App">
-      <Header />
+      <React.Fragment>
+        <Routes></Routes>
+      </React.Fragment>
     </div>
   );
 }

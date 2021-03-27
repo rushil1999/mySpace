@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -21,7 +22,9 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const Header = () => {
+const Header = (props: any) => {
+  console.log('IN Header');
+
   const classes = useStyles();
 
   return (
@@ -29,10 +32,10 @@ const Header = () => {
       <AppBar position="static">
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <Sidebar />
+            <Sidebar  history={props.history}/>
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            News
+            MySpace
           </Typography>
           <Button color="inherit">Login</Button>
         </Toolbar>
