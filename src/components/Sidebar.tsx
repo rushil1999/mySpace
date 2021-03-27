@@ -1,16 +1,16 @@
+
 import React from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
-import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import { Divider, Drawer } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import MenuIcon from '@material-ui/icons/Menu';
+import { ViewAgenda } from '@material-ui/icons';
+import {Link} from 'react-router-dom';
 
 const useStyles = makeStyles({
   list: {
@@ -21,78 +21,62 @@ const useStyles = makeStyles({
   },
 });
 
-type Anchor = 'top' | 'left' | 'bottom' | 'right';
 
-const Sidebar = () => {
+function Sidebar(props: any) {
+    console.log('IN Sidebar');
+
   const classes = useStyles();
-  const [state, setState] = React.useState({
-    top: false,
-    left: false,
-    bottom: false,
-    right: false,
-  });
+  const [state, setState] = React.useState(false);
 
-  const toggleDrawer = (anchor: Anchor, open: boolean) => (
-    event: React.KeyboardEvent | React.MouseEvent,
+  const toggleDrawer = () => (
   ) => {
-    if (
-      event &&
-      event.type === 'keydown' &&
-      ((event as React.KeyboardEvent).key === 'Tab' ||
-        (event as React.KeyboardEvent).key === 'Shift')
-    ) {
-      return;
-    }
-
-    setState({ ...state, [anchor]: open });
+    setState(!state);
   };
 
-  const list = (anchor: Anchor) => (
+  const list = () => (
     <div
-      className={clsx(classes.list, {
-        [classes.fullList]: anchor === 'top' || anchor === 'bottom',
-      })}
+      className={clsx(classes.list)}
       role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
+      onClick={toggleDrawer()}
+      onKeyDown={toggleDrawer()}
     >
       <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <ListItem>  
+            <ListItemText primary='Environments'/>
+        </ListItem>
       </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+      <List>  
+        <Divider/>
+        <Link to={'/page2'}>
+            <ListItem button>
+                <ListItemIcon><ViewAgenda/></ListItemIcon>
+                <ListItemText primary='Resource Management'/>
+            </ListItem>
+        </Link>
+        <Link to={'/page3'}>
+            <ListItem button>
+                <ListItemIcon><ViewAgenda/></ListItemIcon>
+                <ListItemText primary='Page 3'/>
+            </ListItem>
+        </Link>
+        <ListItem button>
+            <ListItemIcon><ViewAgenda/></ListItemIcon>
+            <ListItemText primary='Task Management'/>
+        </ListItem>
       </List>
     </div>
   );
 
-  return (
-    <div>
-      {(['left'] as Anchor[]).map((anchor) => (
-        <React.Fragment key={anchor}>
-          <Button onClick={toggleDrawer(anchor, true)}>
-              <MenuIcon /></Button>
-          <SwipeableDrawer
-            anchor={anchor}
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
-            onOpen={toggleDrawer(anchor, true)}
+  return(
+      <div>
+          <Button onClick={toggleDrawer()}><MenuIcon/></Button>
+          <Drawer
+            open={state}
+            onClose={toggleDrawer()}
           >
-            {list(anchor)}
-          </SwipeableDrawer>
-        </React.Fragment>
-      ))}
-    </div>
+            {list()}
+          </Drawer>
+      </div>
   );
 }
 

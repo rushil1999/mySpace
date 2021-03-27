@@ -1,12 +1,14 @@
 import React from 'react';
 import './App.css';
-import ResourceManagementContainer from './components/ResourceManagementContainer';
+import Routes from './components/Routes';
 
-function App() {
+function App() {  
   return (
-		<div className="App">
-			<ResourceManagementContainer />
-		</div>
+    <div className="App">
+      <React.Fragment>
+        <Routes></Routes>
+      </React.Fragment>
+    </div>
   );
 }
 
