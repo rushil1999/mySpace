@@ -45,9 +45,13 @@ export default function BoxGrid() {
   };
 
   const handleChildBox = (boxId: string) => {
-    console.log("Skeleton Clicked", boxId);
-    setOpenBoxDrawerState(!openBoxDrawerState);
+    console.log("Skeleton Clicked", boxId, openBoxDrawerState);
+    toggleChildDrawer();
     setChildBoxId(boxId);
+  };
+
+  const toggleChildDrawer = () => {
+    setOpenBoxDrawerState(!openBoxDrawerState);
   };
 
   // useEffect(() => {
@@ -122,9 +126,13 @@ export default function BoxGrid() {
             ></BoxDialog>
           ) : null}
           {openBoxDrawerState ? (
-            <BoxDrawer
-              boxData={boxes.find((element) => element.id === childBoxId)}
-            ></BoxDrawer>
+            <div>
+              <BoxDrawer
+                boxData={boxes.find((element) => element.id === childBoxId)}
+                state={openBoxDrawerState}
+                onClose={toggleChildDrawer}
+              ></BoxDrawer>
+            </div>
           ) : null}
         </div>
       )}

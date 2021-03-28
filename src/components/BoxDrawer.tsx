@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
@@ -34,15 +34,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function BoxDrawer(props: any) {
   const classes = useStyles();
-  const [openDrawerState, setOpenDrawerState] = useState<Boolean>(true);
+  const { state, onClose } = props;
   const [addNewFileState, setAddNewFileState] = useState<Boolean>(false);
+  const [drawerInnerState, setDrawerInnerState] = useState<Boolean>(state);
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const { id, name, description, files } = props.boxData;
-  console.log("Props", name, description, props);
 
-  const toggleDrawer = () => () => {
-    setOpenDrawerState(!openDrawerState);
-  };
+  console.log("Props", name, description, props);
 
   const handlePopoverOpen = (
     event: React.MouseEvent<HTMLElement, MouseEvent>
@@ -53,6 +51,10 @@ function BoxDrawer(props: any) {
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    setDrawerInnerState(state);
+  }, [state]);
 
   const open = Boolean(anchorEl);
 
@@ -79,7 +81,7 @@ function BoxDrawer(props: any) {
         className={clsx(classes.list)}
         role="presentation"
         // onClick={toggleDrawer()}
-        onKeyDown={toggleDrawer()}
+        // onKeyDown={toggleDrawer()}
       >
         <List>
           <ListItem>
@@ -157,11 +159,7 @@ function BoxDrawer(props: any) {
   return (
     <div>
       <React.Fragment>
-        <Drawer
-          anchor={"right"}
-          open={!!openDrawerState}
-          onClose={toggleDrawer()}
-        >
+        <Drawer anchor={"right"} open={!!drawerInnerState} onClose={onClose}>
           {list()}
         </Drawer>
       </React.Fragment>
