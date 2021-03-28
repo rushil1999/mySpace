@@ -95,6 +95,7 @@ function DropZone(props) {
 
   useEffect(() => {
     if (uploadComplete) {
+      console.log("Upload complete");
       sendUrlListToParent(urlArray);
     }
   }, [uploadComplete, urlArray, sendUrlListToParent]);
@@ -105,14 +106,23 @@ function DropZone(props) {
 
   return (
     <div>
-      <Button onClick={handleOpen}>
-        <CloudUploadIcon />
-      </Button>
+      <div style={{ position: "absolute", bottom: 0, width: "100%" }}>
+        <Button
+          onClick={handleOpen}
+          variant="contained"
+          color="default"
+          startIcon={<CloudUploadIcon />}
+          fullWidth={true}
+          size="large"
+        >
+          Upload
+        </Button>
+      </div>
       {loading ? <CircularProgress /> : null}
       <DropzoneDialog
         open={openState}
         onSave={handleSave}
-        acceptedFiles={["image/jpeg", "image/png", "image/bmp"]}
+        acceptedFiles={["image/jpeg", "image/png", "image/bmp", "pdf", "ppt"]}
         showPreviews={true}
         maxFileSize={5000000}
         onClose={handleClose}

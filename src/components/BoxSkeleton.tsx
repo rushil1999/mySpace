@@ -27,6 +27,7 @@ function BoxSkeleton(props: any) {
   const [box, setBox] = useState({});
   const [actionListState, setActionListState] = useState<Boolean>(false);
   const { boxData, parentHandlerFunction, loading = false } = props;
+  console.log("SKELETON", boxData);
   const classes = useStyles();
 
   function onButtonClick() {
@@ -75,7 +76,7 @@ function BoxSkeleton(props: any) {
             loading ? (
               <Skeleton animation="wave" height={10} width="40%" />
             ) : (
-              "created Date"
+              "created 7 hours ago"
             )
           }
         />

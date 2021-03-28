@@ -152,6 +152,7 @@ export default function BoxDialog(props: any) {
               <MenuItem value={"Sports"}>Sports</MenuItem>
               <MenuItem value={"Music"}>Music</MenuItem>
               <MenuItem value={"Love"}>Love</MenuItem>
+              <MenuItem value={"SelfImprov"}>Self Improvment</MenuItem>
               <MenuItem value={"Other"}>Other</MenuItem>
             </Select>
             {formState.category === "Other" ? (

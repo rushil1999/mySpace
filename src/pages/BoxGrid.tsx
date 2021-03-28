@@ -9,6 +9,7 @@ import { BoxInterface } from "../helpers/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getDatabaseDocuments } from "../services/firestore";
 import BoxDrawer from "../components/BoxDrawer";
+import TempDrawer from "../components/TempDrawer";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -26,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function BoxGrid() {
+  console.log("BOX Grid");
   const [spacing, setSpacing] = useState<GridSpacing>(4);
   const [openModalState, setOpenModalState] = useState<Boolean>(false);
   const [openBoxDrawerState, setOpenBoxDrawerState] = useState<Boolean>(false);
@@ -46,8 +48,8 @@ export default function BoxGrid() {
 
   const handleChildBox = (boxId: string) => {
     console.log("Skeleton Clicked", boxId, openBoxDrawerState);
-    toggleChildDrawer();
     setChildBoxId(boxId);
+    toggleChildDrawer();
   };
 
   const toggleChildDrawer = () => {
@@ -127,11 +129,11 @@ export default function BoxGrid() {
           ) : null}
           {openBoxDrawerState ? (
             <div>
-              <BoxDrawer
-                boxData={boxes.find((element) => element.id === childBoxId)}
+              <TempDrawer
+                boxId={boxes!.find((element) => element.id === childBoxId)!.id}
                 state={openBoxDrawerState}
                 onClose={toggleChildDrawer}
-              ></BoxDrawer>
+              ></TempDrawer>
             </div>
           ) : null}
         </div>

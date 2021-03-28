@@ -11,16 +11,28 @@ export async function getDatabaseDocuments() {
       id: doc.id,
       name: doc.data().name,
       description: doc.data().description,
-      files: doc.data().files,
+      imgUrl: doc.data().imgUrl,
+      category: doc.data().imgUrl,
+      timestamp: doc.data().timestamp,
     };
     documentArray.push(document);
   });
   return documentArray;
 }
 
-export async function getDatabaseDocumentById(id: string) {
+type RespStructure =
+  | null
+  | [string, undefined | Record<string, string | number | Array<string>>];
+export async function getDatabaseDocumentById(
+  id: string
+): Promise<RespStructure> {
   const response = await firestore.collection("box").doc(id).get();
-  return response;
+  if (response.exists) {
+    console.log("RESPONSE", response.id, response.data());
+    return [response.id, response!.data()];
+  } else {
+    return null;
+  }
 }
 
 export async function saveDatabaseDocuments(formData: BoxInterface) {
