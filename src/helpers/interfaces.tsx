@@ -9,3 +9,11 @@ export interface BoxInterface {
   timestamp?: Array<String> | number | string;
   imgUrl?: Array<String> | number | string;
 }
+
+export interface ToDoInterface {
+  description: string;
+  dueDate: Date;
+  title: string;
+  priority: string;
+  status: number;
+}

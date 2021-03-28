@@ -47,17 +47,17 @@ function Sidebar(props: any) {
           </ListItemIcon>
           <ListItemText primary="Resource Management" />
         </ListItem>
-        <ListItem button component={Link} to={"/page3"}>
+        <ListItem button component={Link} to={"/todo-grid"}>
           <ListItemIcon>
             <ViewAgenda />
           </ListItemIcon>
-          <ListItemText primary="Page 3" />
+          <ListItemText primary="Task Management" />
         </ListItem>
         <ListItem button>
           <ListItemIcon>
             <ViewAgenda />
           </ListItemIcon>
-          <ListItemText primary="Task Management" />
+          <ListItemText primary="Music Player" />
         </ListItem>
       </List>
     </div>

@@ -134,7 +134,7 @@ function TempDrawer(props) {
         </List>
         <Divider />
         <List>
-          {box.files.map((file) => {
+          {box.fileNames.map((fileName) => {
             return (
               <ListItem>
                 <div>
@@ -144,7 +144,7 @@ function TempDrawer(props) {
                     onMouseEnter={handlePopoverOpen}
                     onMouseLeave={handlePopoverClose}
                   >
-                    {file}
+                    {fileName}
                   </Typography>
                   <Popover
                     id="mouse-over-popover"
@@ -170,7 +170,11 @@ function TempDrawer(props) {
                     disableRestoreFocus
                   >
                     {/* <Typography>I use Popover.</Typography> */}
-                    <Preview file={file}></Preview>
+                    <Preview
+                      file={
+                        "https://firebasestorage.googleapis.com/v0/b/myspace-ec3c9.appspot.com/o/Resume.pdf?alt=media&token=e5622336-f8a8-45b7-9847-4280f9c47cfd"
+                      }
+                    ></Preview>
                   </Popover>
                 </div>
               </ListItem>

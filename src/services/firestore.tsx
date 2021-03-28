@@ -14,6 +14,7 @@ export async function getDatabaseDocuments() {
       imgUrl: doc.data().imgUrl,
       category: doc.data().imgUrl,
       timestamp: doc.data().timestamp,
+      filesName: doc.data().fileNames,
     };
     documentArray.push(document);
   });
