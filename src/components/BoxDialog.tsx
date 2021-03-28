@@ -8,16 +8,26 @@ import TextField from "@material-ui/core/TextField";
 import { BoxInterface } from "../helpers/interfaces";
 import { firestore } from "../services/firebaseConfig";
 import { saveDatabaseDocuments } from "../services/firestore";
-import { CircularProgress } from "@material-ui/core";
+import { imageUrl } from "../helpers/constants";
+import {
+  CircularProgress,
+  InputLabel,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
+import { constants } from "node:buffer";
 
 export default function BoxDialog(props: any) {
-  const { handlerFunction } = props;
+  const { handlerFunction, getNewBoxAlert } = props;
   const [loading, setLoading] = useState<Boolean>(false);
   const [dialogOpenState, setDialogOpenState] = useState<Boolean>(true);
-
+  const emptyArray: Array<String> = [];
   const [formState, setFormState] = useState<BoxInterface | any>({
     name: "",
     description: "",
+    files: emptyArray,
+    category: "",
+    otherCategory: "",
   });
 
   const handleChange = (event: any) => {
@@ -71,14 +81,25 @@ export default function BoxDialog(props: any) {
   //   }
   async function onBoxFormSubmit() {
     setLoading(true);
+
     var formData: BoxInterface = {
       name: formState.name,
       description: formState.description,
+      files: emptyArray,
+      category: formState.category
+        ? formState.category
+        : formState.otherCateogry,
+      timestamp: new Date().getTime(),
+      imgUrl: imageUrl.find(
+        (element: Record<string, string>) =>
+          element.category == formState.category
+      )?.imgUrl,
     };
     const response: any = await saveDatabaseDocuments(formData);
     if (response) {
       setLoading(false);
       setDialogOpenState(false);
+      getNewBoxAlert();
     }
   }
 
@@ -116,6 +137,36 @@ export default function BoxDialog(props: any) {
               onChange={handleChange}
               required
             />
+            <InputLabel id="demo-simple-select-label">Category</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              name="category"
+              fullWidth
+              margin="dense"
+              value={formState.category}
+              onChange={handleChange}
+            >
+              <MenuItem value={"Work"}>Work</MenuItem>
+              <MenuItem value={"Fun"}>Fun</MenuItem>
+              <MenuItem value={"Sports"}>Sports</MenuItem>
+              <MenuItem value={"Music"}>Music</MenuItem>
+              <MenuItem value={"Love"}>Love</MenuItem>
+              <MenuItem value={"Other"}>Other</MenuItem>
+            </Select>
+            {formState.category === "Other" ? (
+              <TextField
+                autoFocus
+                margin="dense"
+                fullWidth
+                value={formState.otherCategory}
+                name="otherCategory"
+                label="Catogory"
+                id="other cateogry"
+                onChange={handleChange}
+                required
+              />
+            ) : null}
           </form>
         </DialogContent>
         <DialogActions>

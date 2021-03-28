@@ -26,13 +26,13 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export default function BoxGrid() {
-  console.log("Firebase oBject", firestore);
   const [spacing, setSpacing] = useState<GridSpacing>(4);
   const [openModalState, setOpenModalState] = useState<Boolean>(false);
   const [openBoxDrawerState, setOpenBoxDrawerState] = useState<Boolean>(false);
   const [boxes, setBoxes] = useState<Array<BoxInterface>>([]);
   const [childBoxId, setChildBoxId] = useState<String>("");
   const [loading, setLoading] = useState(true);
+  const [addBoxState, setAddBoxState] = useState(false);
   const classes = useStyles();
   const boxArray: Array<BoxInterface> = [];
 
@@ -40,8 +40,12 @@ export default function BoxGrid() {
     setOpenModalState(!openModalState);
   };
 
+  const getNewBoxAlert = () => {
+    setAddBoxState(true);
+  };
+
   const handleChildBox = (boxId: string) => {
-    console.log("Child found", boxId);
+    console.log("Skeleton Clicked", boxId);
     setOpenBoxDrawerState(!openBoxDrawerState);
     setChildBoxId(boxId);
   };
@@ -82,7 +86,7 @@ export default function BoxGrid() {
       }
     }
     loadContent();
-  }, []);
+  }, [addBoxState]);
 
   return (
     <div>
@@ -112,12 +116,14 @@ export default function BoxGrid() {
             </Grid>
           </Grid>
           {openModalState ? (
-            <BoxDialog handlerFunction={handleModal}></BoxDialog>
+            <BoxDialog
+              handlerFunction={handleModal}
+              getNewBoxAlert={getNewBoxAlert}
+            ></BoxDialog>
           ) : null}
           {openBoxDrawerState ? (
             <BoxDrawer
-              anchor={"right"}
-              boxData={boxes.find((element) => element.id == childBoxId)}
+              boxData={boxes.find((element) => element.id === childBoxId)}
             ></BoxDrawer>
           ) : null}
         </div>

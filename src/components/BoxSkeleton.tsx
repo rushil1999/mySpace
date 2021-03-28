@@ -75,7 +75,7 @@ function BoxSkeleton(props: any) {
             loading ? (
               <Skeleton animation="wave" height={10} width="40%" />
             ) : (
-              "5 hours ago"
+              "created Date"
             )
           }
         />
@@ -84,7 +84,11 @@ function BoxSkeleton(props: any) {
         ) : (
           <CardMedia
             className={classes.media}
-            image="https://firebasestorage.googleapis.com/v0/b/myspace-ec3c9.appspot.com/o/64c35da8ce05400291f6eaf561d1acea.png?alt=media&token=b517a4e5-06e2-49f7-a224-801cfac3c6a7"
+            image={
+              boxData.imgUrl
+                ? boxData.imgUrl
+                : "https://firebasestorage.googleapis.com/v0/b/myspace-ec3c9.appspot.com/o/64c35da8ce05400291f6eaf561d1acea.png?alt=media&token=b517a4e5-06e2-49f7-a224-801cfac3c6a7"
+            }
             title="BOX"
           />
         )}
