@@ -82,7 +82,7 @@ function Todo(props: any) {
         description: formData.description,
         dueDate: formData.dueDate,
         priority: formData.priority,
-        status: -1,
+        status: formData.status,
       },
       { merge: true }
     );
@@ -91,37 +91,6 @@ function Todo(props: any) {
 
   return (
     <div>
-      <Modal
-        open={open}
-        onClose={(e) => setOpen(false)}
-        className="todo__modal"
-      >
-        <div className={classes.paper}>
-          <h4>update todo</h4>
-          <FormControl className={classes.modalform}>
-            <form>
-              <TextField
-                label="update todo"
-                placeholder={props.todo.description}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                variant="outlined"
-                size="small"
-              />
-              <Button
-                type="submit"
-                color="primary"
-                variant="contained"
-                size="small"
-                className="todo__submit"
-                onClick={updateTodo}
-              >
-                update
-              </Button>
-            </form>
-          </FormControl>
-        </div>
-      </Modal>
       <Dialog
         open={openModalState}
         onClose={handleModal}
@@ -178,11 +147,11 @@ function Todo(props: any) {
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                name="priority"
-                value={input.priority}
+                name="status"
+                value={input.status}
                 // onChange={(e) => setInput({ priority: e.target.value })}
                 onChange={handleChange}
-                placeholder={props.todo.priority}
+                placeholder={props.todo.status}
               >
                 <MenuItem value={-1}>To Do</MenuItem>
                 <MenuItem value={0}>Doing</MenuItem>
