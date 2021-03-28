@@ -127,23 +127,6 @@ function ToDoGrid() {
                 shrink: true,
               }}
             />
-            {/*
-             <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              disableToolbar
-              variant="inline"
-              format="MM/dd/yyyy"
-              margin="normal"
-              id="date-picker-inline"
-              label="Due Date"
-              value={input.dueDate}
-              onChange={(e) => setInput({ dueDate: e.target.value })}
-              KeyboardButtonProps={{
-                "aria-label": "change date",
-              }}
-            />
-            </MuiPickersUtilsProvider> */}
-
             <FormControl className={classes.formControl}>
               <InputLabel id="demo-simple-select-label">Priority</InputLabel>
               <Select
