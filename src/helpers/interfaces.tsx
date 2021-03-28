@@ -11,4 +11,5 @@ export interface ToDoInterface {
   dueDate: Date;
   title: string;
   priority: string;
+  status: number;
 }

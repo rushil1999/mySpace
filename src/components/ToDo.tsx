@@ -13,10 +13,17 @@ import FolderIcon from "@material-ui/icons/Folder";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { firestore } from "../services/firebaseConfig";
-import Dialog from "@material-ui/core/Dialog";
 import Modal from "@material-ui/core/Modal";
 import { FormControl, TextField, Button } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
+import { ToDoInterface } from "../helpers/interfaces";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,25 +38,55 @@ const useStyles = makeStyles((theme) => ({
   modalform: {
     marginTop: "2em",
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 550,
+  },
 }));
 
 function Todo(props: any) {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState<ToDoInterface | any>({
+    title: props.todo.title,
+    description: props.todo.description,
+    dueDate: props.todo.dueDate,
+    priority: props.todo.priority,
+    status: props.todo.status,
+  });
+  const [openModalState, setOpenModalState] = useState<boolean>(false);
+  const handleModal = () => {
+    setOpenModalState(!openModalState);
+  };
   const handleOpen = () => {
     setOpen(true);
   };
-
+  const handleChange = (event: any) => {
+    const value = event.target.value;
+    setInput({
+      ...input,
+      [event.target.name]: value,
+    });
+  };
   const updateTodo = () => {
+    var formData = {
+      description: input.description,
+      dueDate: input.dueDate,
+      priority: input.priority,
+      title: input.title,
+      status: input.status,
+    };
     firestore.collection("todos").doc(props.todo.id).set(
       {
-        description: input,
+        title: formData.title,
+        description: formData.description,
+        dueDate: formData.dueDate,
+        priority: formData.priority,
+        status: -1,
       },
       { merge: true }
     );
-    setInput("");
-    setOpen(false);
+    handleModal();
   };
 
   return (
@@ -85,8 +122,86 @@ function Todo(props: any) {
           </FormControl>
         </div>
       </Modal>
+      <Dialog
+        open={openModalState}
+        onClose={handleModal}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Update Todo</DialogTitle>
+        <DialogContent>
+          <form>
+            <TextField
+              autoFocus
+              margin="dense"
+              fullWidth
+              label="title"
+              placeholder="xhjj"
+              name="title"
+              variant="outlined"
+              size="small"
+              value={input.title}
+              // onChange={(e) => setInput({ title: e.target.value })}
+              onChange={handleChange}
+            />
+            <TextField
+              autoFocus
+              margin="dense"
+              fullWidth
+              label="Description"
+              placeholder={props.todo.description}
+              name="description"
+              variant="outlined"
+              size="small"
+              value={input.description}
+              //onChange={(e) => setDescription(e.target.value)}
+              onChange={handleChange}
+            />
 
-      <Grid item xs={2} sm={2} md={12} lg={12}>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-label">Priority</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                name="priority"
+                value={input.priority}
+                // onChange={(e) => setInput({ priority: e.target.value })}
+                onChange={handleChange}
+                placeholder={props.todo.priority}
+              >
+                <MenuItem value={-1}>Low</MenuItem>
+                <MenuItem value={0}>Medium</MenuItem>
+                <MenuItem value={1}>High</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="demo-simple-select-label">Status</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                name="priority"
+                value={input.priority}
+                // onChange={(e) => setInput({ priority: e.target.value })}
+                onChange={handleChange}
+                placeholder={props.todo.priority}
+              >
+                <MenuItem value={-1}>To Do</MenuItem>
+                <MenuItem value={0}>Doing</MenuItem>
+                <MenuItem value={1}>Done</MenuItem>
+              </Select>
+            </FormControl>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleModal} color="primary">
+            Cancel
+          </Button>
+          <Button type="submit" color="primary" onClick={updateTodo}>
+            UPDATE
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Grid item xs={12} sm={12} md={12} lg={12}>
         <Paper>
           <List>
             <ListItem>
@@ -108,7 +223,7 @@ function Todo(props: any) {
                   edge="end"
                   color="primary"
                   aria-label="edit"
-                  onClick={handleOpen}
+                  onClick={handleModal}
                   size="small"
                 >
                   <EditOutlinedIcon />
