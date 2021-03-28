@@ -16,6 +16,7 @@ import { firestore } from "../services/firebaseConfig";
 import Dialog from "@material-ui/core/Dialog";
 import Modal from "@material-ui/core/Modal";
 import { FormControl, TextField, Button } from "@material-ui/core";
+import Chip from "@material-ui/core/Chip";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,7 +44,7 @@ function Todo(props: any) {
   const updateTodo = () => {
     firestore.collection("todos").doc(props.todo.id).set(
       {
-        todo: input,
+        description: input,
       },
       { merge: true }
     );
@@ -64,7 +65,7 @@ function Todo(props: any) {
             <form>
               <TextField
                 label="update todo"
-                placeholder={props.todo.todo}
+                placeholder={props.todo.description}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 variant="outlined"
@@ -84,41 +85,49 @@ function Todo(props: any) {
           </FormControl>
         </div>
       </Modal>
-      <Grid container spacing={3} justify="center">
-        <Grid item xs={10} sm={10} md={6} lg={6}>
-          <Paper>
-            <List>
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar>
-                    <FolderIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText primary={props.todo.todo} />
-                <ListItemSecondaryAction>
-                  <IconButton
-                    edge="end"
-                    color="primary"
-                    aria-label="edit"
-                    onClick={handleOpen}
-                  >
-                    <EditOutlinedIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={(event) =>
-                      firestore.collection("todos").doc(props.todo.id).delete()
-                    }
-                    edge="end"
-                    color="secondary"
-                    aria-label="delete"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            </List>
-          </Paper>
-        </Grid>
+
+      <Grid item xs={2} sm={2} md={12} lg={12}>
+        <Paper>
+          <List>
+            <ListItem>
+              <ListItemText
+                primary={props.todo.title}
+                secondary={props.todo.description}
+              />
+              <ListItemSecondaryAction>
+                {props.todo.priority >= 0 ? (
+                  props.todo.priority ? (
+                    <Chip label="High" color="secondary" size="small" />
+                  ) : (
+                    <Chip label="Medium" color="primary" size="small" />
+                  )
+                ) : (
+                  <Chip label="Low" size="small" />
+                )}
+                <IconButton
+                  edge="end"
+                  color="primary"
+                  aria-label="edit"
+                  onClick={handleOpen}
+                  size="small"
+                >
+                  <EditOutlinedIcon />
+                </IconButton>
+                <IconButton
+                  onClick={(event) =>
+                    firestore.collection("todos").doc(props.todo.id).delete()
+                  }
+                  edge="end"
+                  color="secondary"
+                  aria-label="delete"
+                  size="small"
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
+          </List>
+        </Paper>
       </Grid>
     </div>
   );
