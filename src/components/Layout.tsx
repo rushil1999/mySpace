@@ -1,7 +1,4 @@
-import React from "react";
-import Sidebar from "./Sidebar";
 import Header from "./Header";
-import { convertToObject } from "typescript";
 
 function Layout(props: any) {
   return (

@@ -1,30 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import React, { useState, useEffect, useContext } from "react";
 import Grid, { GridSpacing } from "@material-ui/core/Grid";
 import BoxSkeleton from "../components/BoxSkeleton";
 import BoxDialog from "../components/BoxDialog";
 import Button from "@material-ui/core/Button";
-import { firestore } from "../services/firebaseConfig";
 import { BoxInterface } from "../helpers/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getDatabaseDocuments } from "../services/firestore";
-import BoxDrawer from "../components/BoxDrawer";
 import TempDrawer from "../components/TempDrawer";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      height: 140,
-      width: 100,
-    },
-    control: {
-      padding: theme.spacing(2),
-    },
-  })
-);
+import { ThemeContext } from "../App";
 
 export default function BoxGrid() {
   console.log("BOX Grid");
@@ -35,18 +18,21 @@ export default function BoxGrid() {
   const [childBoxId, setChildBoxId] = useState<String>("");
   const [loading, setLoading] = useState(true);
   const [addBoxState, setAddBoxState] = useState(false);
-  const classes = useStyles();
+  // const classes = useStyles();
   const boxArray: Array<BoxInterface> = [];
+
+  const themeFunction = useContext(ThemeContext);
+  const styles = themeFunction();
 
   const handleModal = () => {
     setOpenModalState(!openModalState);
   };
 
-  const getNewBoxAlert = () => {
+  const onClickNewBoxButton = () => {
     setAddBoxState(true);
   };
 
-  const handleChildBox = (boxId: string) => {
+  const onClickChildBox = (boxId: string) => {
     console.log("Skeleton Clicked", boxId, openBoxDrawerState);
     setChildBoxId(boxId);
     toggleChildDrawer();
@@ -105,7 +91,7 @@ export default function BoxGrid() {
               ADD BOX
             </Button>
           </div>
-          <Grid container className={classes.root} spacing={4}>
+          <Grid container className={styles.root} spacing={4}>
             <Grid item xs={12}>
               <Grid container justify="center" spacing={spacing}>
                 {boxes.map((boxData) => {
@@ -113,7 +99,7 @@ export default function BoxGrid() {
                     <Grid item>
                       <BoxSkeleton
                         boxData={boxData}
-                        parentHandlerFunction={handleChildBox}
+                        onClickChildBox={onClickChildBox}
                       />
                     </Grid>
                   );
@@ -124,7 +110,7 @@ export default function BoxGrid() {
           {openModalState ? (
             <BoxDialog
               handlerFunction={handleModal}
-              getNewBoxAlert={getNewBoxAlert}
+              onClickNewBoxButton={onClickNewBoxButton}
             ></BoxDialog>
           ) : null}
           {openBoxDrawerState ? (

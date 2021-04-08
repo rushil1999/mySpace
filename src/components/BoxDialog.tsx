@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -6,7 +6,6 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import { BoxInterface } from "../helpers/interfaces";
-import { firestore } from "../services/firebaseConfig";
 import { saveDatabaseDocuments } from "../services/firestore";
 import { imageUrl } from "../helpers/constants";
 import {
@@ -14,11 +13,12 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  FormControl,
 } from "@material-ui/core";
-import { constants } from "node:buffer";
+import { ThemeContext } from "../App";
 
 export default function BoxDialog(props: any) {
-  const { handlerFunction, getNewBoxAlert } = props;
+  const { handlerFunction, onClickNewBoxButton } = props;
   const [loading, setLoading] = useState<Boolean>(false);
   const [dialogOpenState, setDialogOpenState] = useState<Boolean>(true);
   const emptyArray: Array<String> = [];
@@ -30,6 +30,8 @@ export default function BoxDialog(props: any) {
     otherCategory: "",
   });
 
+  const themeFunction = useContext(ThemeContext);
+  const styles = themeFunction();
   const handleChange = (event: any) => {
     const value = event.target.value;
     setFormState({
@@ -92,14 +94,14 @@ export default function BoxDialog(props: any) {
       timestamp: new Date().getTime(),
       imgUrl: imageUrl.find(
         (element: Record<string, string>) =>
-          element.category == formState.category
+          element.category === formState.category
       )?.imgUrl,
     };
     const response: any = await saveDatabaseDocuments(formData);
     if (response) {
       setLoading(false);
       setDialogOpenState(false);
-      getNewBoxAlert();
+      onClickNewBoxButton();
     }
   }
 
@@ -137,37 +139,37 @@ export default function BoxDialog(props: any) {
               onChange={handleChange}
               required
             />
-            <InputLabel id="demo-simple-select-label">Category</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              name="category"
-              fullWidth
-              margin="dense"
-              value={formState.category}
-              onChange={handleChange}
-            >
-              <MenuItem value={"Work"}>Work</MenuItem>
-              <MenuItem value={"Fun"}>Fun</MenuItem>
-              <MenuItem value={"Sports"}>Sports</MenuItem>
-              <MenuItem value={"Music"}>Music</MenuItem>
-              <MenuItem value={"Love"}>Love</MenuItem>
-              <MenuItem value={"SelfImprov"}>Self Improvment</MenuItem>
-              <MenuItem value={"Other"}>Other</MenuItem>
-            </Select>
-            {formState.category === "Other" ? (
-              <TextField
-                autoFocus
-                margin="dense"
+            <FormControl className={styles.formControl}>
+              <InputLabel>Category</InputLabel>
+              <Select
+                name="category"
                 fullWidth
-                value={formState.otherCategory}
-                name="otherCategory"
-                label="Catogory"
-                id="other cateogry"
+                margin="dense"
+                value={formState.category}
                 onChange={handleChange}
-                required
-              />
-            ) : null}
+              >
+                <MenuItem value={"Work"}>Work</MenuItem>
+                <MenuItem value={"Fun"}>Fun</MenuItem>
+                <MenuItem value={"Sports"}>Sports</MenuItem>
+                <MenuItem value={"Music"}>Music</MenuItem>
+                <MenuItem value={"Love"}>Love</MenuItem>
+                <MenuItem value={"SelfImprov"}>Self Improvment</MenuItem>
+                <MenuItem value={"Other"}>Other</MenuItem>
+              </Select>
+              {formState.category === "Other" ? (
+                <TextField
+                  autoFocus
+                  margin="dense"
+                  fullWidth
+                  value={formState.otherCategory}
+                  name="otherCategory"
+                  label="Catogory"
+                  id="other cateogry"
+                  onChange={handleChange}
+                  required
+                />
+              ) : null}
+            </FormControl>
           </form>
         </DialogContent>
         <DialogActions>

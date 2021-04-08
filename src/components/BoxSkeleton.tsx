@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
+import React, { useState, useContext } from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -10,33 +9,23 @@ import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Skeleton from "@material-ui/lab/Skeleton";
 import Button from "@material-ui/core/Button";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    card: {
-      maxWidth: 345,
-      margin: theme.spacing(2),
-    },
-    media: {
-      height: 190,
-    },
-  })
-);
+import { ThemeContext } from "../App";
 
 function BoxSkeleton(props: any) {
   const [box, setBox] = useState({});
   const [actionListState, setActionListState] = useState<Boolean>(false);
-  const { boxData, parentHandlerFunction, loading = false } = props;
-  console.log("SKELETON", boxData);
-  const classes = useStyles();
+  const { boxData, onClickChildBox, loading = false } = props;
+  // console.log("SKELETON", boxData);
+  const themeFunction = useContext(ThemeContext);
+  const styles = themeFunction();
 
   function onButtonClick() {
-    parentHandlerFunction(boxData.id);
+    onClickChildBox(boxData.id);
   }
 
   return (
     <div>
-      <Card className={classes.card}>
+      <Card className={styles.card}>
         <CardHeader
           avatar={
             loading ? (
@@ -81,10 +70,10 @@ function BoxSkeleton(props: any) {
           }
         />
         {loading ? (
-          <Skeleton animation="wave" variant="rect" className={classes.media} />
+          <Skeleton animation="wave" variant="rect" className={styles.media} />
         ) : (
           <CardMedia
-            className={classes.media}
+            className={styles.media}
             image={
               boxData.imgUrl
                 ? boxData.imgUrl

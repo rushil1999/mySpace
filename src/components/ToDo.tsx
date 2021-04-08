@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
+import React, { useContext, useState } from "react";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
@@ -24,28 +23,11 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
-
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    position: "absolute",
-    marginTop: "2em",
-    width: 400,
-    backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
-  },
-  modalform: {
-    marginTop: "2em",
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 550,
-  },
-}));
+import { ThemeContext } from "../App";
 
 function Todo(props: any) {
-  const classes = useStyles();
+  const themeFunction = useContext(ThemeContext);
+  const styles = themeFunction();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState<ToDoInterface | any>({
     title: props.todo.title,
@@ -126,7 +108,7 @@ function Todo(props: any) {
               onChange={handleChange}
             />
 
-            <FormControl className={classes.formControl}>
+            <FormControl className={styles.formControl}>
               <InputLabel id="demo-simple-select-label">Priority</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -142,7 +124,7 @@ function Todo(props: any) {
                 <MenuItem value={1}>High</MenuItem>
               </Select>
             </FormControl>
-            <FormControl className={classes.formControl}>
+            <FormControl className={styles.formControl}>
               <InputLabel id="demo-simple-select-label">Status</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
