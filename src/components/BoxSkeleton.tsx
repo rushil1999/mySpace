@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
@@ -8,20 +8,12 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Skeleton from "@material-ui/lab/Skeleton";
-import Button from "@material-ui/core/Button";
 import { ThemeContext } from "../App";
 
 function BoxSkeleton(props: any) {
-  const [box, setBox] = useState({});
-  const [actionListState, setActionListState] = useState<Boolean>(false);
-  const { boxData, onClickChildBox, loading = false } = props;
-  // console.log("SKELETON", boxData);
+  const { boxData, loading = false } = props;
   const themeFunction = useContext(ThemeContext);
   const styles = themeFunction();
-
-  function onButtonClick() {
-    onClickChildBox(boxData.id);
-  }
 
   return (
     <div>
@@ -93,11 +85,9 @@ function BoxSkeleton(props: any) {
               <Skeleton animation="wave" height={10} width="80%" />
             </React.Fragment>
           ) : (
-            <Button onClick={onButtonClick}>
-              <Typography variant="body2" color="textSecondary" component="p">
-                {boxData.description}
-              </Typography>
-            </Button>
+            <Typography variant="body2" color="textSecondary" component="p">
+              {boxData.description}
+            </Typography>
           )}
         </CardContent>
       </Card>

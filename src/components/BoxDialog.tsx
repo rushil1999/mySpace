@@ -6,7 +6,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import { BoxInterface } from "../helpers/interfaces";
-import { saveDatabaseDocuments } from "../services/firestore";
+import { saveBoxDocument } from "../services/firestore";
 import { imageUrl } from "../helpers/constants";
 import {
   CircularProgress,
@@ -21,11 +21,9 @@ export default function BoxDialog(props: any) {
   const { handlerFunction, onClickNewBoxButton } = props;
   const [loading, setLoading] = useState<Boolean>(false);
   const [dialogOpenState, setDialogOpenState] = useState<Boolean>(true);
-  const emptyArray: Array<String> = [];
   const [formState, setFormState] = useState<BoxInterface | any>({
     name: "",
     description: "",
-    files: emptyArray,
     category: "",
     otherCategory: "",
   });
@@ -39,65 +37,22 @@ export default function BoxDialog(props: any) {
       [event.target.name]: value,
     });
   };
-  // TODO: Handle Service
-  //   async function onBoxFormSubmit() {
-  //     var formData = {
-  //       name: formState.name,
-  //       description: formState.description,
-  //     };
-  //     const boxArray: any = [];
-  //     firestore
-  //       .collection("box")
-  //       .get()
-  //       .then((querySnapshot) => {
-  //         const data = querySnapshot.docs.map((doc) => doc.data());
-  //         const ids = querySnapshot.docs.map((doc) => doc.id);
-  //         data.map((element) => {
-  //           const strictBox: BoxInterface = {
-  //             id: "",
-  //             name: element.name,
-  //             description: element.description,
-  //           };
-  //           boxArray.push(strictBox);
-  //         });
 
-  //         ids.map((element, index) => {
-  //           boxArray[index]["id"] = element;
-  //         });
-  //         console.log(boxArray);
-  //         if (boxArray.length) {
-  //           firestore
-  //             .collection("box")
-  //             .doc()
-  //             .set(formData)
-  //             .then(function () {
-  //               //TODO: Popup
-  //               console.log("Box successfully written!");
-  //             })
-  //             .catch(function (error) {
-  //               //TODO: Pop up Error dialog
-  //               console.error("Error writing Box: ", error);
-  //             });
-  //         }
-  //       });
-  //   }
   async function onBoxFormSubmit() {
     setLoading(true);
-
     var formData: BoxInterface = {
       name: formState.name,
       description: formState.description,
-      files: emptyArray,
       category: formState.category
         ? formState.category
         : formState.otherCateogry,
-      timestamp: new Date().getTime(),
+      createdAt: new Date().getTime(),
       imgUrl: imageUrl.find(
         (element: Record<string, string>) =>
           element.category === formState.category
       )?.imgUrl,
     };
-    const response: any = await saveDatabaseDocuments(formData);
+    const response: any = await saveBoxDocument(formData);
     if (response) {
       setLoading(false);
       setDialogOpenState(false);
@@ -116,29 +71,32 @@ export default function BoxDialog(props: any) {
         <DialogTitle id="form-dialog-title">Box Details</DialogTitle>
         <DialogContent>
           <form>
-            <TextField
-              autoFocus
-              margin="dense"
-              fullWidth
-              value={formState.name}
-              name="name"
-              label="Name"
-              id="name"
-              onChange={handleChange}
-              required
-            />
-
-            <TextField
-              autoFocus
-              margin="dense"
-              fullWidth
-              value={formState.description}
-              name="description"
-              label="Description"
-              id="description"
-              onChange={handleChange}
-              required
-            />
+            <FormControl className={styles.formControl}>
+              <TextField
+                autoFocus
+                margin="dense"
+                fullWidth
+                value={formState.name}
+                name="name"
+                label="Name"
+                id="name"
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
+            <FormControl className={styles.formControl}>
+              <TextField
+                autoFocus
+                margin="dense"
+                fullWidth
+                value={formState.description}
+                name="description"
+                label="Description"
+                id="description"
+                onChange={handleChange}
+                required
+              />
+            </FormControl>
             <FormControl className={styles.formControl}>
               <InputLabel>Category</InputLabel>
               <Select
@@ -184,3 +142,46 @@ export default function BoxDialog(props: any) {
     </div>
   );
 }
+
+// TODO: Handle Service
+//   async function onBoxFormSubmit() {
+//     var formData = {
+//       name: formState.name,
+//       description: formState.description,
+//     };
+//     const boxArray: any = [];
+//     firestore
+//       .collection("box")
+//       .get()
+//       .then((querySnapshot) => {
+//         const data = querySnapshot.docs.map((doc) => doc.data());
+//         const ids = querySnapshot.docs.map((doc) => doc.id);
+//         data.map((element) => {
+//           const strictBox: BoxInterface = {
+//             id: "",
+//             name: element.name,
+//             description: element.description,
+//           };
+//           boxArray.push(strictBox);
+//         });
+
+//         ids.map((element, index) => {
+//           boxArray[index]["id"] = element;
+//         });
+//         console.log(boxArray);
+//         if (boxArray.length) {
+//           firestore
+//             .collection("box")
+//             .doc()
+//             .set(formData)
+//             .then(function () {
+//               //TODO: Popup
+//               console.log("Box successfully written!");
+//             })
+//             .catch(function (error) {
+//               //TODO: Pop up Error dialog
+//               console.error("Error writing Box: ", error);
+//             });
+//         }
+//       });
+//   }

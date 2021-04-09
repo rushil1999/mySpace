@@ -19,7 +19,6 @@ export default function BoxGrid() {
   const [loading, setLoading] = useState(true);
   const [addBoxState, setAddBoxState] = useState(false);
   // const classes = useStyles();
-  const boxArray: Array<BoxInterface> = [];
 
   const themeFunction = useContext(ThemeContext);
   const styles = themeFunction();
@@ -32,47 +31,30 @@ export default function BoxGrid() {
     setAddBoxState(true);
   };
 
-  const onClickChildBox = (boxId: string) => {
-    console.log("Skeleton Clicked", boxId, openBoxDrawerState);
-    setChildBoxId(boxId);
-    toggleChildDrawer();
-  };
-
   const toggleChildDrawer = () => {
     setOpenBoxDrawerState(!openBoxDrawerState);
   };
 
-  // useEffect(() => {
-  // 	firestore
-  // 		.collection('box')
-  // 		.get()
-  // 		.then(querySnapshot => {
-  // 			const data = querySnapshot.docs.map(doc => doc.data());
-  // 			const ids = querySnapshot.docs.map(doc => doc.id);
-  // 			data.map((element) => {
-  // 					const strictBox: BoxInterface = {
-  // 						id: '',
-  // 						name: element.name,
-  // 						description: element.description,
-  // 					}
-  // 					boxArray.push(strictBox);
-  // 			})
-
-  // 			ids.map((element, index) => {
-  // 				boxArray[index]["id"] = element;
-  // 			})
-  // 			console.log(boxArray);
-  // 			if(boxArray){
-  // 				setBoxes(boxArray);
-  // 				setLoading(false);
-  // 			}
-  //   });
-  //   }, []);
+  const onGridButtonClicked = (boxId: any) => {
+    setChildBoxId(boxId);
+    toggleChildDrawer();
+  };
 
   useEffect(() => {
     async function loadContent() {
-      const boxArray = await getDatabaseDocuments();
-      if (boxArray) {
+      const boxArray: Array<BoxInterface> = [];
+      const response = await getDatabaseDocuments();
+      if (response) {
+        response.forEach((element: any) => {
+          const box: BoxInterface = {
+            id: element.id,
+            name: element.name,
+            description: element.description,
+            createdAt: element.createdAt,
+            imgUrl: element.imgUrl,
+          };
+          boxArray.push(box);
+        });
         setBoxes(boxArray);
         setLoading(false);
       }
@@ -91,16 +73,24 @@ export default function BoxGrid() {
               ADD BOX
             </Button>
           </div>
-          <Grid container className={styles.root} spacing={4}>
-            <Grid item xs={12}>
-              <Grid container justify="center" spacing={spacing}>
+          <Grid key="outerGrid" container className={styles.root} spacing={4}>
+            <Grid key="middleGrid" item xs={12}>
+              <Grid
+                key="innerGrid"
+                container
+                justify="center"
+                spacing={spacing}
+              >
                 {boxes.map((boxData) => {
                   return (
                     <Grid item>
-                      <BoxSkeleton
-                        boxData={boxData}
-                        onClickChildBox={onClickChildBox}
-                      />
+                      <Button
+                        onClick={() => {
+                          onGridButtonClicked(boxData.id);
+                        }}
+                      >
+                        <BoxSkeleton boxData={boxData} />
+                      </Button>
                     </Grid>
                   );
                 })}
@@ -127,3 +117,30 @@ export default function BoxGrid() {
     </div>
   );
 }
+
+// useEffect(() => {
+// 	firestore
+// 		.collection('box')
+// 		.get()
+// 		.then(querySnapshot => {
+// 			const data = querySnapshot.docs.map(doc => doc.data());
+// 			const ids = querySnapshot.docs.map(doc => doc.id);
+// 			data.map((element) => {
+// 					const strictBox: BoxInterface = {
+// 						id: '',
+// 						name: element.name,
+// 						description: element.description,
+// 					}
+// 					boxArray.push(strictBox);
+// 			})
+
+// 			ids.map((element, index) => {
+// 				boxArray[index]["id"] = element;
+// 			})
+// 			console.log(boxArray);
+// 			if(boxArray){
+// 				setBoxes(boxArray);
+// 				setLoading(false);
+// 			}
+//   });
+//   }, []);

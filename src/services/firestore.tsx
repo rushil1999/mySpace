@@ -1,4 +1,3 @@
-import React from "react";
 import { BoxInterface } from "../helpers/interfaces";
 import { firestore } from "./firebaseConfig";
 
@@ -36,7 +35,7 @@ export async function getDatabaseDocumentById(
   }
 }
 
-export async function saveDatabaseDocuments(formData: BoxInterface) {
+export async function saveBoxDocument(formData: BoxInterface) {
   const response = await firestore.collection("box").add(formData);
   return response;
 }
