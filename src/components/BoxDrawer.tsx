@@ -1,169 +1,215 @@
-import React, { useEffect, useState } from "react";
-import clsx from "clsx";
-import Drawer from "@material-ui/core/Drawer";
+import { CircularProgress, Drawer, ListSubheader } from "@material-ui/core";
+import React, { useState, useContext, useEffect } from "react";
+import { ThemeContext } from "../App";
+import { AssetInterface, BoxInterface } from "../helpers/interfaces";
+import { getDocumentByIdAndType } from "../services/firestore";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import DescriptionIcon from "@material-ui/icons/Description";
-import { ListSubheader } from "@material-ui/core";
-import DropZone from "./Upload";
-import Preview from "./Preview";
+import Grid from "@material-ui/core/Grid";
+import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import Popover from "@material-ui/core/Popover";
 import Typography from "@material-ui/core/Typography";
-import { saveFileToBox } from "../services/firestore";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    popover: {
-      pointerEvents: "none",
-    },
-    paper: {
-      padding: theme.spacing(1),
-    },
-    list: {
-      width: 550,
-    },
-    fullList: {
-      width: "auto",
-    },
-  })
-);
+import Preview from "./Preview";
+import DropZone from "./Upload";
+import {
+  saveDocumentByIdAndType,
+  updateDocumentByIdAndType,
+} from "../services/firestore";
 
 function BoxDrawer(props: any) {
-  const classes = useStyles();
-  const { state, onClose } = props;
-  const [addNewFileState, setAddNewFileState] = useState<Boolean>(false);
-  const [drawerInnerState, setDrawerInnerState] = useState<Boolean>(state);
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-  const { id, name, description, files } = props.boxData;
+  const themeFunction = useContext(ThemeContext);
+  const styles = themeFunction();
+  const { state, boxId, onClose } = props;
+  const [drawerState] = useState<boolean>(state);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [boxState, setBoxState] = useState<BoxInterface>();
+  const [assets, setAssets] = useState<Array<AssetInterface>>();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [assetContent, setAssetContent] = useState<string>();
+  const open = Boolean(anchorEl);
 
-  console.log("Props", name, description, props);
-
-  const handlePopoverOpen = (
-    event: React.MouseEvent<HTMLElement, MouseEvent>
-  ) => {
-    setAnchorEl(event.currentTarget);
+  const handlePopoverOpen = (anchorValue: any, assetContent: any) => {
+    setAnchorEl(anchorValue);
+    setAssetContent(assetContent);
   };
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
 
-  useEffect(() => {
-    setDrawerInnerState(state);
-  }, [state]);
+  function fetchUploadedAssets(assetArray: any) {
+    console.log("assetArray", assetArray);
+    saveAssets(assetArray);
+  }
 
-  const open = Boolean(anchorEl);
+  async function saveAssets(assetArray: any) {
+    const savedAssetIds: Array<string> = [];
+    for (const asset of assetArray) {
+      const response = await saveDocumentByIdAndType(asset, "assets");
+      if (response && response.id) {
+        savedAssetIds.push(response.id);
+      }
+    }
+    await allocateAssetsToBox(savedAssetIds);
+  }
 
-  function fetchUrlList(urlArray: Array<String>) {
-    if (urlArray && urlArray.length > 0) {
-      const finalArray = [];
-      if (files === undefined) {
-        finalArray.push(...urlArray);
-      } else {
-        finalArray.push(...files);
-        finalArray.push(...urlArray);
-      }
-      const response = saveFileToBox(id, finalArray);
-      if (response) {
-        console.log("Files adde to box");
-        setAddNewFileState(true);
-      }
+  async function allocateAssetsToBox(savedAssetIds: Array<string>) {
+    const currentBoxAssetIdArray: any = boxState!.assets;
+    currentBoxAssetIdArray.push(...savedAssetIds);
+    const response: any = await updateDocumentByIdAndType(
+      boxState!.id,
+      { assets: currentBoxAssetIdArray },
+      "box"
+    );
+    if (response) {
+      //TODO: update assets section
     }
   }
 
-  const list = () => (
-    <div>
-      <div
-        className={clsx(classes.list)}
-        role="presentation"
-        // onClick={toggleDrawer()}
-        // onKeyDown={toggleDrawer()}
-      >
-        <List>
-          <ListItem>
-            <ListItemIcon>
-              <DescriptionIcon />
-            </ListItemIcon>
-            <ListSubheader>Name: </ListSubheader>
-            <br></br>
-            <ListItemText primary={name} />
-          </ListItem>
-        </List>
-        <Divider />
-        <List>
-          <ListItem>
-            <ListItemIcon>
-              <DescriptionIcon />
-            </ListItemIcon>
-            <ListSubheader>Description: </ListSubheader>
-            <br></br>
-            <ListItemText primary={description} />
-          </ListItem>
-        </List>
-        <Divider />
-        <List>
-          {files.map((file: string) => {
-            return (
-              <ListItem>
-                <div>
-                  <Typography
-                    aria-owns={open ? "mouse-over-popover" : undefined}
-                    aria-haspopup="true"
-                    onMouseEnter={handlePopoverOpen}
-                    onMouseLeave={handlePopoverClose}
-                  >
-                    {file}
-                  </Typography>
-                  <Popover
-                    id="mouse-over-popover"
-                    className={classes.popover}
-                    classes={{
-                      paper: classes.paper,
-                    }}
-                    open={open}
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                      vertical: "center",
-                      horizontal: "left",
-                    }}
-                    transformOrigin={{
-                      vertical: "center",
-                      horizontal: "left",
-                    }}
-                    anchorPosition={{
-                      left: 50000,
-                      top: 10,
-                    }}
-                    onClose={handlePopoverClose}
-                    disableRestoreFocus
-                  >
-                    {/* <Typography>I use Popover.</Typography> */}
-                    <Preview file={file}></Preview>
-                  </Popover>
-                </div>
-              </ListItem>
-            );
-          })}
-        </List>
-      </div>
-      <div>
-        <DropZone sendUrlListToParent={fetchUrlList} />
-      </div>
-    </div>
-  );
+  useEffect(() => {
+    setLoading(true);
+    async function getBoxData() {
+      const responseArray = await getDocumentByIdAndType(boxId, "box");
+      const id = responseArray![0]?.toString();
+      const data: any = responseArray![1];
+      const { name, description, category, createdAt, assets } = data;
+      console.log(data, id);
+      if (id && data) {
+        const box: BoxInterface = {
+          id: id,
+          name,
+          description,
+          createdAt,
+          category,
+          assets,
+        };
+        const assetArray = await fetchBoxAssets(assets);
+        setAssets(assetArray);
+        setBoxState(box);
+        setLoading(false);
+      }
+    }
+    getBoxData();
+  }, [boxId]);
+
+  async function fetchBoxAssets(
+    assetIds: Array<string>
+  ): Promise<Array<AssetInterface>> {
+    const assetsArray: Array<AssetInterface> = [];
+    for (const assetId of assetIds) {
+      const responseArray = await getDocumentByIdAndType(assetId, "assets");
+      const id = responseArray![0]?.toString();
+      const data: any = responseArray![1];
+      const { name, content } = data;
+      if (id && data) {
+        const asset: AssetInterface = {
+          id,
+          name,
+          content,
+        };
+        assetsArray.push(asset);
+      }
+    }
+    return assetsArray;
+  }
 
   return (
-    <div>
-      <React.Fragment>
-        <Drawer anchor={"right"} open={!!drawerInnerState} onClose={onClose}>
-          {list()}
-        </Drawer>
-      </React.Fragment>
-    </div>
+    <React.Fragment key="right-drawer">
+      <Drawer anchor="right" open={drawerState} onClose={onClose}>
+        <div className={styles.list}>
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <>
+              <List>
+                <ListItem>
+                  <ListSubheader>Name: </ListSubheader>
+                  <ListItem>
+                    <ListItemText primary={boxState!.name} />
+                  </ListItem>
+                </ListItem>
+              </List>
+              <Divider />
+              <List>
+                <ListItem>
+                  <ListSubheader>Description: </ListSubheader>
+                  <ListItem>
+                    <ListItemText primary={boxState!.description} />
+                  </ListItem>
+                </ListItem>
+              </List>
+              <Divider />
+
+              <Grid
+                key="outerGrid"
+                container
+                className={styles.root}
+                spacing={4}
+              >
+                <Grid key="middleGrid" item>
+                  <Grid key="innerGrid" container justify="center" spacing={4}>
+                    {assets!.map((asset) => {
+                      return (
+                        <Grid item>
+                          <InsertDriveFileIcon
+                            key={asset!.name}
+                            onMouseEnter={(event) => {
+                              handlePopoverOpen(
+                                event.currentTarget,
+                                asset!.content
+                              );
+                            }}
+                            onMouseLeave={handlePopoverClose}
+                          ></InsertDriveFileIcon>
+                          <Typography
+                            variant="button"
+                            display="block"
+                            gutterBottom
+                          >
+                            {asset.name}
+                          </Typography>
+                          <Popover
+                            id="mouse-over-popover"
+                            className={styles.popover}
+                            classes={{
+                              paper: styles.paper,
+                            }}
+                            open={open}
+                            anchorEl={anchorEl}
+                            anchorOrigin={{
+                              vertical: "center",
+                              horizontal: "left",
+                            }}
+                            transformOrigin={{
+                              vertical: "center",
+                              horizontal: "left",
+                            }}
+                            anchorPosition={{
+                              left: 50000,
+                              top: 10,
+                            }}
+                            onClose={handlePopoverClose}
+                            disableRestoreFocus
+                          >
+                            {/* <Typography>I use Popover.</Typography> */}
+                            <Preview file={assetContent}></Preview>
+                          </Popover>
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
+                </Grid>
+              </Grid>
+              <div>
+                <DropZone sendUploadedAssetsToParent={fetchUploadedAssets} />
+              </div>
+            </>
+          )}
+        </div>
+      </Drawer>
+    </React.Fragment>
   );
 }
 

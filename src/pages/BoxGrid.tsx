@@ -6,7 +6,7 @@ import Button from "@material-ui/core/Button";
 import { BoxInterface } from "../helpers/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getDatabaseDocuments } from "../services/firestore";
-import TempDrawer from "../components/TempDrawer";
+import BoxDrawer from "../components/BoxDrawer";
 import { ThemeContext } from "../App";
 
 export default function BoxGrid() {
@@ -73,8 +73,13 @@ export default function BoxGrid() {
               ADD BOX
             </Button>
           </div>
-          <Grid key="outerGrid" container className={styles.root} spacing={4}>
-            <Grid key="middleGrid" item xs={12}>
+          <Grid
+            key="outerGrid"
+            container
+            className={styles.root}
+            spacing={spacing}
+          >
+            <Grid key="middleGrid" item>
               <Grid
                 key="innerGrid"
                 container
@@ -85,6 +90,7 @@ export default function BoxGrid() {
                   return (
                     <Grid item>
                       <Button
+                        key="skeleton-button"
                         onClick={() => {
                           onGridButtonClicked(boxData.id);
                         }}
@@ -105,11 +111,11 @@ export default function BoxGrid() {
           ) : null}
           {openBoxDrawerState ? (
             <div>
-              <TempDrawer
+              <BoxDrawer
                 boxId={boxes!.find((element) => element.id === childBoxId)!.id}
                 state={openBoxDrawerState}
                 onClose={toggleChildDrawer}
-              ></TempDrawer>
+              ></BoxDrawer>
             </div>
           ) : null}
         </div>

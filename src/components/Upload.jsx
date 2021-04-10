@@ -4,7 +4,6 @@ import Button from "@material-ui/core/Button";
 import CloudUploadIcon from "@material-ui/icons/CloudUpload";
 import { CircularProgress } from "@material-ui/core";
 import { storage } from "../services/firebaseConfig";
-import firebase from "firebase";
 
 function DropZone(props) {
   const [files, setFiles] = useState([]);
@@ -13,8 +12,8 @@ function DropZone(props) {
   const [uploadComplete, setUploadComplete] = useState(false);
   const [progress, setProgress] = useState(0);
   const [errorArray, setErrorArray] = useState([]);
-  const [urlArray, setUrlArray] = useState([]);
-  const { sendUrlListToParent } = props;
+  const [assetArray, setAssetArray] = useState([]);
+  const { sendUploadedAssetsToParent } = props;
   const handleClose = () => {
     setOpenState(false);
   };
@@ -30,38 +29,6 @@ function DropZone(props) {
     files.map((file, index) => {
       const storageRef = storage.ref();
       const fileRef = storageRef.child(file.name);
-      // const uploadTask = fileRef.put(file);
-      // uploadTask.on(
-      //   "state_changed",
-      //   (snapshot) => {
-      //     // Observe state change events such as progress, pause, and resume
-      //     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-      //     var progress =
-      //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      //     console.log("Upload is " + progress + "% done");
-      //     switch (snapshot.state) {
-      //       case firebase.storage.TaskState.PAUSED: // or 'paused'
-      //         console.log("Upload is paused");
-      //         break;
-      //       case firebase.storage.TaskState.RUNNING: // or 'running'
-      //         console.log("Upload is running");
-      //         break;
-      //     }
-      //   },
-      //   (error) => {
-      //     // Handle unsuccessful uploads
-      //     console.log(error);
-      //     tempErrorArray.push(error);
-      //   },
-      //   () => {
-      //     // Handle successful uploads on complete
-      //     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-      //     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-      //       console.log("File available at", downloadURL);
-      //       tempUrlArray.push(downloadURL);
-      //     });
-      //   }
-      // );
       fileRef.put(file).on(
         "state_changed",
         (snap) => {
@@ -75,17 +42,21 @@ function DropZone(props) {
         },
         async () => {
           const url = await fileRef.getDownloadURL();
-          let tempUrlArray = urlArray;
-          tempUrlArray.push(url);
-          setUrlArray(tempUrlArray);
-          if (urlArray.length === files.length) {
+          let tempAssetArray = assetArray;
+          const asset = {
+            name: file.name,
+            content: url,
+          };
+          tempAssetArray.push(asset);
+          setAssetArray(tempAssetArray);
+          if (assetArray.length === files.length) {
             setLoading(false);
             setUploadComplete(true);
           }
         }
       );
     });
-  }, [files, errorArray, urlArray]);
+  }, [files, errorArray, assetArray]);
 
   useEffect(() => {
     if (errorArray.length > 0) {
@@ -96,9 +67,9 @@ function DropZone(props) {
   useEffect(() => {
     if (uploadComplete) {
       console.log("Upload complete");
-      sendUrlListToParent(urlArray);
+      sendUploadedAssetsToParent(assetArray);
     }
-  }, [uploadComplete, urlArray, sendUrlListToParent]);
+  }, [uploadComplete, assetArray, sendUploadedAssetsToParent]);
 
   const handleOpen = () => {
     setOpenState(true);
@@ -132,3 +103,36 @@ function DropZone(props) {
 }
 
 export default DropZone;
+
+// const uploadTask = fileRef.put(file);
+// uploadTask.on(
+//   "state_changed",
+//   (snapshot) => {
+//     // Observe state change events such as progress, pause, and resume
+//     // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+//     var progress =
+//       (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//     console.log("Upload is " + progress + "% done");
+//     switch (snapshot.state) {
+//       case firebase.storage.TaskState.PAUSED: // or 'paused'
+//         console.log("Upload is paused");
+//         break;
+//       case firebase.storage.TaskState.RUNNING: // or 'running'
+//         console.log("Upload is running");
+//         break;
+//     }
+//   },
+//   (error) => {
+//     // Handle unsuccessful uploads
+//     console.log(error);
+//     tempErrorArray.push(error);
+//   },
+//   () => {
+//     // Handle successful uploads on complete
+//     // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+//     uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+//       console.log("File available at", downloadURL);
+//       tempUrlArray.push(downloadURL);
+//     });
+//   }
+// );

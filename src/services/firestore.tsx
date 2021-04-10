@@ -1,4 +1,4 @@
-import { BoxInterface } from "../helpers/interfaces";
+import { AssetInterface, BoxInterface } from "../helpers/interfaces";
 import { firestore } from "./firebaseConfig";
 
 export async function getDatabaseDocuments() {
@@ -20,25 +20,51 @@ export async function getDatabaseDocuments() {
   return documentArray;
 }
 
-type RespStructure =
-  | null
-  | [string, undefined | Record<string, string | number | Array<string>>];
-export async function getDatabaseDocumentById(
-  id: string
-): Promise<RespStructure> {
-  const response = await firestore.collection("box").doc(id).get();
+export async function getDocumentByIdAndType(
+  id: string,
+  collectionType: string
+) {
+  const response = await firestore.collection(collectionType).doc(id).get();
   if (response.exists) {
-    console.log("RESPONSE", response.id, response.data());
-    return [response.id, response!.data()];
-  } else {
-    return null;
+    return [response.id, response.data()];
   }
 }
 
-export async function saveBoxDocument(formData: BoxInterface) {
-  const response = await firestore.collection("box").add(formData);
+export async function saveDocumentByIdAndType(
+  formData: BoxInterface | AssetInterface,
+  collectionType: string
+) {
+  const response = await firestore.collection(collectionType).add(formData);
   return response;
 }
+
+export async function updateDocumentByIdAndType(
+  id: any,
+  updatedObject: any,
+  collectionType: string
+) {
+  const response = await firestore
+    .collection(collectionType)
+    .doc(id)
+    .update(updatedObject);
+  return response;
+}
+
+//Function is used to add elements to array rather than updating the entire array
+
+// export async function addElementsInArray(
+//   id: string,
+//   collectionType: string
+//   arrayToAdd: any,
+//   arrayField: string
+// ) {
+
+//   for (const element of arrayToAdd ) {
+//     const response = await firestore.collection(collectionType).doc(id).update({
+//       [arrayField]: firestore.FieldValue.arrayUnion(element);
+//     });
+//   }
+// }
 
 export async function saveFileToBox(id: string, urlArray: Array<String>) {
   const response = await firestore
@@ -47,6 +73,17 @@ export async function saveFileToBox(id: string, urlArray: Array<String>) {
     .update({ files: urlArray });
   return response;
 }
+
+// export async function getDatabaseDocumentById(
+//   id: string
+// ): Promise<RespStructure> {
+//   const response = await firestore.collection("box").doc(id).get();
+//   if (response.exists) {
+//     return [response.id, response!.data()];
+//   } else {
+//     return null;
+//   }
+// }
 
 // async function fetchBoxData() {
 //   console.log("FetBoxData function called");

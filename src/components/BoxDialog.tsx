@@ -6,7 +6,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import TextField from "@material-ui/core/TextField";
 import { BoxInterface } from "../helpers/interfaces";
-import { saveBoxDocument } from "../services/firestore";
+import { saveDocumentByIdAndType } from "../services/firestore";
 import { imageUrl } from "../helpers/constants";
 import {
   CircularProgress,
@@ -51,8 +51,9 @@ export default function BoxDialog(props: any) {
         (element: Record<string, string>) =>
           element.category === formState.category
       )?.imgUrl,
+      assets: [],
     };
-    const response: any = await saveBoxDocument(formData);
+    const response: any = await saveDocumentByIdAndType(formData, "box");
     if (response) {
       setLoading(false);
       setDialogOpenState(false);
