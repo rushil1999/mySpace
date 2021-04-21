@@ -6,6 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import Sidebar from "./Sidebar";
+import {Link} from 'react-router-dom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -34,12 +35,12 @@ const Header = (props: any) => {
             color="inherit"
             aria-label="menu"
           >
-            <Sidebar history={props.history} />
+            <Sidebar/>
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6" className={classes.title} >
             MySpace
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" component={Link} to={"/authentication"}>Login</Button>
         </Toolbar>
       </AppBar>
     </div>

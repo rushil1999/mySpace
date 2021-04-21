@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Grid, { GridSpacing } from "@material-ui/core/Grid";
 import BoxSkeleton from "../components/BoxSkeleton";
 import BoxDialog from "../components/BoxDialog";
@@ -7,21 +7,33 @@ import { BoxInterface } from "../helpers/interfaces";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { getDatabaseDocuments } from "../services/firestore";
 import BoxDrawer from "../components/BoxDrawer";
-import { ThemeContext } from "../App";
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 
 export default function BoxGrid() {
-  console.log("BOX Grid");
-  const [spacing, setSpacing] = useState<GridSpacing>(4);
   const [openModalState, setOpenModalState] = useState<Boolean>(false);
   const [openBoxDrawerState, setOpenBoxDrawerState] = useState<Boolean>(false);
   const [boxes, setBoxes] = useState<Array<BoxInterface>>([]);
   const [childBoxId, setChildBoxId] = useState<String>("");
   const [loading, setLoading] = useState(true);
   const [addBoxState, setAddBoxState] = useState(false);
-  // const classes = useStyles();
 
-  const themeFunction = useContext(ThemeContext);
-  const styles = themeFunction();
+  const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+      root: {
+        flexGrow: 1,  
+      },
+      paper: {
+        height: 140,
+        width: 100,
+      },
+      control: {
+        padding: theme.spacing(2),
+      },
+    }),
+  );
+  const styles = useStyles();
+
+
 
   const handleModal = () => {
     setOpenModalState(!openModalState);
@@ -68,40 +80,30 @@ export default function BoxGrid() {
         <CircularProgress />
       ) : (
         <div>
-          <div style={{ marginTop: "1em", marginBottom: "1em" }}>
+          <div style={{ marginTop: "1em", marginBottom: "1em"}}>
             <Button variant="outlined" color="primary" onClick={handleModal}>
               ADD BOX
             </Button>
           </div>
           <Grid
             key="outerGrid"
-            container
             className={styles.root}
-            spacing={spacing}
+            container justify="center"
           >
-            <Grid key="middleGrid" item>
-              <Grid
-                key="innerGrid"
-                container
-                justify="center"
-                spacing={spacing}
-              >
-                {boxes.map((boxData) => {
-                  return (
-                    <Grid item>
-                      <Button
-                        key="skeleton-button"
-                        onClick={() => {
-                          onGridButtonClicked(boxData.id);
-                        }}
-                      >
-                        <BoxSkeleton boxData={boxData} />
-                      </Button>
-                    </Grid>
-                  );
-                })}
-              </Grid>
-            </Grid>
+            {boxes.map((boxData) => {
+              return (
+                <Grid item>
+                  <Button
+                    key="skeleton-button"
+                    onClick={() => {
+                      onGridButtonClicked(boxData.id);
+                    }}
+                  >
+                    <BoxSkeleton boxData={boxData} />
+                  </Button>
+                </Grid>
+              );
+            })}
           </Grid>
           {openModalState ? (
             <BoxDialog
@@ -123,6 +125,10 @@ export default function BoxGrid() {
     </div>
   );
 }
+
+
+
+
 
 // useEffect(() => {
 // 	firestore

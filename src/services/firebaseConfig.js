@@ -11,7 +11,7 @@ import firebase from 'firebase'
 //     measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 // }
 const firebaseConfig = {
-    apiKey: "AIzaSyCCvpyNNukYRpQoFpGiDBhbq2wh6PqVVkE",
+  apiKey: "AIzaSyCCvpyNNukYRpQoFpGiDBhbq2wh6PqVVkE",
 	authDomain: "myspace-ec3c9.firebaseapp.com",
 	databaseURL: 'https://myspace-ec3c9-default-rtdb.firebaseio.com',
 	projectId: "myspace-ec3c9",
@@ -25,5 +25,6 @@ firebase.analytics();
 const database = firebase.database();
 const storage = firebase.storage();
 const firestore = firebase.firestore();
+const auth = firebase.auth();
 
-export { storage, firestore, database }
+export { storage, firestore, database, auth }

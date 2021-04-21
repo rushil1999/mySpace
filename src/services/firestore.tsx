@@ -47,14 +47,15 @@ export async function updateDocumentByIdAndType(
     .collection(collectionType)
     .doc(id)
     .update(updatedObject);
+  console.log('Updated Assets Array response', response);
   return response;
 }
 
-//Function is used to add elements to array rather than updating the entire array
+// Function is used to add elements to array rather than updating the entire array
 
 // export async function addElementsInArray(
 //   id: string,
-//   collectionType: string
+//   collectionType: string,
 //   arrayToAdd: any,
 //   arrayField: string
 // ) {

@@ -7,12 +7,13 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import Grid from "@material-ui/core/Grid";
-import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
-import Popover from "@material-ui/core/Popover";
-import Typography from "@material-ui/core/Typography";
-import Preview from "./Preview";
+// import Grid from "@material-ui/core/Grid";
+// import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
+// import Popover from "@material-ui/core/Popover";
+// import Typography from "@material-ui/core/Typography";
+// import Preview from "./Preview";
 import DropZone from "./Upload";
+import AssetGrid from './AssetGrid';
 import {
   saveDocumentByIdAndType,
   updateDocumentByIdAndType,
@@ -26,18 +27,18 @@ function BoxDrawer(props: any) {
   const [loading, setLoading] = useState<boolean>(true);
   const [boxState, setBoxState] = useState<BoxInterface>();
   const [assets, setAssets] = useState<Array<AssetInterface>>();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [assetContent, setAssetContent] = useState<string>();
-  const open = Boolean(anchorEl);
+  // const [anchorEl, setAnchorEl] = React.useState(null);
+  // const [assetContent, setAssetContent] = useState<string>();
+  // const open = Boolean(anchorEl);
 
-  const handlePopoverOpen = (anchorValue: any, assetContent: any) => {
-    setAnchorEl(anchorValue);
-    setAssetContent(assetContent);
-  };
+  // const handlePopoverOpen = (anchorValue: any, assetContent: any) => {
+  //   setAnchorEl(anchorValue);
+  //   setAssetContent(assetContent);
+  // };
 
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
+  // const handlePopoverClose = () => {
+  //   setAnchorEl(null);
+  // };
 
   function fetchUploadedAssets(assetArray: any) {
     console.log("assetArray", assetArray);
@@ -54,7 +55,8 @@ function BoxDrawer(props: any) {
     }
     await allocateAssetsToBox(savedAssetIds);
   }
-
+  //Curently the entore assets array get updated 
+  //TODO: Optimize assets array updation
   async function allocateAssetsToBox(savedAssetIds: Array<string>) {
     const currentBoxAssetIdArray: any = boxState!.assets;
     currentBoxAssetIdArray.push(...savedAssetIds);
@@ -63,9 +65,11 @@ function BoxDrawer(props: any) {
       { assets: currentBoxAssetIdArray },
       "box"
     );
-    if (response) {
-      //TODO: update assets section
+    if(!response){
+      // const assetArray = await fetchBoxAssets(boxState.assets);
+      // setAssets(assetArray);  
     }
+    
   }
 
   useEffect(() => {
@@ -141,67 +145,9 @@ function BoxDrawer(props: any) {
                 </ListItem>
               </List>
               <Divider />
-
-              <Grid
-                key="outerGrid"
-                container
-                className={styles.root}
-                spacing={4}
-              >
-                <Grid key="middleGrid" item>
-                  <Grid key="innerGrid" container justify="center" spacing={4}>
-                    {assets!.map((asset) => {
-                      return (
-                        <Grid item>
-                          <InsertDriveFileIcon
-                            key={asset!.name}
-                            onMouseEnter={(event) => {
-                              handlePopoverOpen(
-                                event.currentTarget,
-                                asset!.content
-                              );
-                            }}
-                            onMouseLeave={handlePopoverClose}
-                          ></InsertDriveFileIcon>
-                          <Typography
-                            variant="button"
-                            display="block"
-                            gutterBottom
-                          >
-                            {asset.name}
-                          </Typography>
-                          <Popover
-                            id="mouse-over-popover"
-                            className={styles.popover}
-                            classes={{
-                              paper: styles.paper,
-                            }}
-                            open={open}
-                            anchorEl={anchorEl}
-                            anchorOrigin={{
-                              vertical: "center",
-                              horizontal: "left",
-                            }}
-                            transformOrigin={{
-                              vertical: "center",
-                              horizontal: "left",
-                            }}
-                            anchorPosition={{
-                              left: 50000,
-                              top: 10,
-                            }}
-                            onClose={handlePopoverClose}
-                            disableRestoreFocus
-                          >
-                            {/* <Typography>I use Popover.</Typography> */}
-                            <Preview file={assetContent}></Preview>
-                          </Popover>
-                        </Grid>
-                      );
-                    })}
-                  </Grid>
-                </Grid>
-              </Grid>
+              <AssetGrid
+                items={assets}
+              ></AssetGrid>
               <div>
                 <DropZone sendUploadedAssetsToParent={fetchUploadedAssets} />
               </div>
@@ -214,3 +160,4 @@ function BoxDrawer(props: any) {
 }
 
 export default BoxDrawer;
+
