@@ -3,16 +3,12 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
-import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
-import FolderIcon from "@material-ui/icons/Folder";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { firestore } from "../services/firebaseConfig";
-import Modal from "@material-ui/core/Modal";
 import { FormControl, TextField, Button } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
 import { ToDoInterface } from "../helpers/interfaces";
@@ -28,7 +24,6 @@ import { ThemeContext } from "../App";
 function Todo(props: any) {
   const themeFunction = useContext(ThemeContext);
   const styles = themeFunction();
-  const [open, setOpen] = useState(false);
   const [input, setInput] = useState<ToDoInterface | any>({
     title: props.todo.title,
     description: props.todo.description,
@@ -39,9 +34,6 @@ function Todo(props: any) {
   const [openModalState, setOpenModalState] = useState<boolean>(false);
   const handleModal = () => {
     setOpenModalState(!openModalState);
-  };
-  const handleOpen = () => {
-    setOpen(true);
   };
   const handleChange = (event: any) => {
     const value = event.target.value;

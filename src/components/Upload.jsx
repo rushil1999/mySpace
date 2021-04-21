@@ -10,7 +10,6 @@ function DropZone(props) {
   const [openState, setOpenState] = useState(false);
   const [loading, setLoading] = useState(false);
   const [uploadComplete, setUploadComplete] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [errorArray, setErrorArray] = useState([]);
   const [assetArray, setAssetArray] = useState([]);
   const { sendUploadedAssetsToParent } = props;
@@ -33,7 +32,8 @@ function DropZone(props) {
         "state_changed",
         (snap) => {
           let percentage = (snap.bytesTransferred / snap.totalBytes) * 100;
-          setProgress(percentage);
+          // setProgress(percentage);
+          console.log(percentage);
         },
         (err) => {
           let tempErrorArray = errorArray;
